@@ -10,9 +10,15 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var trending = AppCubit.get(context).trendingMovies;
-    var topRated = AppCubit.get(context).topRatedMovies;
-    var tv = AppCubit.get(context).tv;
+    var trending = AppCubit
+        .get(context)
+        .trendingMovies;
+    var topRated = AppCubit
+        .get(context)
+        .topRatedMovies;
+    var upComing = AppCubit
+        .get(context)
+        .upComingMovies;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -42,10 +48,12 @@ class HomeLayout extends StatelessWidget {
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) => buildListOfTrendingMovies(
-                    trending: trending,
-                    index: index,
-                  ),
+                  itemBuilder: (context, index) =>
+                      buildListOfTrendingMovies(
+                        context,
+                        trending: trending,
+                        index: index,
+                      ),
                   itemCount: trending.length,
                 ),
               ),
@@ -65,15 +73,17 @@ class HomeLayout extends StatelessWidget {
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) => buildListOfTopRatedMovies(
-                    topRated: topRated,
-                    index: index,
-                  ),
+                  itemBuilder: (context, index) =>
+                      buildListOfTopRatedMovies(
+                        context,
+                        topRated: topRated,
+                        index: index,
+                      ),
                   itemCount: trending.length,
                 ),
               ),
               Text(
-                'Popular Tv Shows Movies',
+                'Up Coming Movies',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
@@ -88,11 +98,13 @@ class HomeLayout extends StatelessWidget {
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) => buildListOfTvShows(
-                    tv: tv,
-                    index: index,
-                  ),
-                  itemCount: trending.length,
+                  itemBuilder: (context, index) =>
+                      buildListOfUpComingMovies(
+                        context,
+                        upComing: upComing,
+                        index: index,
+                      ),
+                  itemCount: upComing.length,
                 ),
               ),
             ],
@@ -102,23 +114,27 @@ class HomeLayout extends StatelessWidget {
     );
   }
 
-  Widget buildListOfTrendingMovies(
-      {required final List trending, required int index, context}) {
+  Widget buildListOfTrendingMovies(context,
+      {required final List trending, required int index,}) {
     return InkWell(
       onTap: () {
         navigateTo(
           context,
           DescriptionMoviesScreen(
             name: trending[index]['title'],
-            bannerUrl: 'https://image.tmdb.org/t/p/w500'+trending[index]['backdrop_path'],
-            posterUrl: 'https://image.tmdb.org/t/p/w500'+trending[index]['poster_path'],
+            bannerUrl: 'https://image.tmdb.org/t/p/w500' +
+                trending[index]['backdrop_path'],
+            posterUrl: 'https://image.tmdb.org/t/p/w500' +
+                trending[index]['poster_path'],
             description: trending[index]['overview'],
-            vote: trending[index]['vote_average'],
+            vote: trending[index]['vote_average'].toString(),
+            launchOn: trending[index]['release_date'],
           ),
         );
       },
       child: Column(
         children: [
+          trending[index]['title'] != null ?
           Container(
             height: 200,
             width: 200,
@@ -126,15 +142,17 @@ class HomeLayout extends StatelessWidget {
                 borderRadius: BorderRadius.circular(150),
                 image: DecorationImage(
                     image: NetworkImage(
-                  'https://image.tmdb.org/t/p/w500' +
-                      trending[index]['poster_path'],
-                ))),
-          ),
+                      'https://image.tmdb.org/t/p/w500' +
+                          trending[index]['poster_path'],
+                    ))),
+          ) : Container(),
           SizedBox(
             height: 5,
           ),
           Text(
-            '${trending[index]['title'] != null ? trending[index]['title'] : 'loading'}',
+            '${trending[index]['title'] != null
+                ? trending[index]['title']
+                : 'loading'}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
@@ -146,61 +164,103 @@ class HomeLayout extends StatelessWidget {
     );
   }
 
-  Widget buildListOfTopRatedMovies(
+  Widget buildListOfTopRatedMovies(context,
       {required final List topRated, required int index}) {
-    return Column(
-      children: [
-        Container(
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(150),
-              image: DecorationImage(
-                  image: NetworkImage(
-                'https://image.tmdb.org/t/p/w500' +
-                    topRated[index]['poster_path'],
-              ))),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Text(
-          '${topRated[index]['title'] != null ? topRated[index]['title'] : 'loading'}',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
+    return InkWell(
+      onTap: () {
+        navigateTo(
+          context,
+          DescriptionMoviesScreen(
+            name: topRated[index]['title'],
+            bannerUrl: 'https://image.tmdb.org/t/p/w500' +
+                topRated[index]['backdrop_path'],
+            posterUrl: 'https://image.tmdb.org/t/p/w500' +
+                topRated[index]['poster_path'],
+            description: topRated[index]['overview'],
+            vote: topRated[index]['vote_average'].toString(),
+            launchOn: topRated[index]['release_date'],
           ),
-          textAlign: TextAlign.center,
-        )
-      ],
+        );
+      },
+      child: Column(
+        children: [
+          topRated[index]['title'] != null ?
+          Container(
+            height: 200,
+            width: 200,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(150),
+                image: DecorationImage(
+                    image: NetworkImage(
+                      'https://image.tmdb.org/t/p/w500' +
+                          topRated[index]['poster_path'],
+                    ))),
+          ) : Container(),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            '${topRated[index]['title'] != null
+                ? topRated[index]['title']
+                : 'loading'}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
     );
   }
 
-  Widget buildListOfTvShows({required final List tv, required int index}) {
-    return Column(
-      children: [
-        Container(
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(150),
-              image: DecorationImage(
-                  image: NetworkImage(
-                'https://image.tmdb.org/t/p/w500' + tv[index]['poster_path'],
-              ))),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Text(
-          '${tv[index]["original_name"] != null ? tv[index]["original_name"] : 'loading'}',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
+  Widget buildListOfUpComingMovies(context,
+      {required final List upComing, required int index}) {
+    return InkWell(
+      onTap: () {
+        navigateTo(
+          context,
+          DescriptionMoviesScreen(
+            name: upComing[index]['title'],
+            bannerUrl: 'https://image.tmdb.org/t/p/w500' +
+                upComing[index]['backdrop_path'],
+            posterUrl: 'https://image.tmdb.org/t/p/w500' +
+                upComing[index]['poster_path'],
+            description: upComing[index]['overview'],
+            vote: upComing[index]['vote_average'].toString(),
+            launchOn: upComing[index]['release_date'],
           ),
-          textAlign: TextAlign.center,
-        )
-      ],
+        );
+      },
+      child: Column(
+        children: [
+          upComing[index]['title'] != null ?
+          Container(
+            height: 200,
+            width: 200,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(150),
+                image: DecorationImage(
+                    image: NetworkImage(
+                      'https://image.tmdb.org/t/p/w500' +
+                          upComing[index]['poster_path'],
+                    ))),
+          ) : Container(),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            '${upComing[index]['title'] != null
+                ? upComing[index]['title']
+                : 'loading'}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
     );
   }
 }
