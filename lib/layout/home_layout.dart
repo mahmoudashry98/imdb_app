@@ -1,5 +1,8 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imdb_app/layout/cubit/cubit.dart';
+import 'package:imdb_app/layout/cubit/states.dart';
 import 'package:imdb_app/modules/description_movies/description_movies_screen.dart';
 import 'package:imdb_app/shared/component/components.dart';
 
@@ -10,114 +13,130 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var trending = AppCubit
-        .get(context)
-        .trendingMovies;
-    var topRated = AppCubit
-        .get(context)
-        .topRatedMovies;
-    var upComing = AppCubit
-        .get(context)
-        .upComingMovies;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'IMDB',
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Trending Movies',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var trending = AppCubit.get(context).trendingMovies;
+        var topRated = AppCubit.get(context).topRatedMovies;
+        var upComing = AppCubit.get(context).upComingMovies;
+        return ConditionalBuilder(
+          condition: trending != null && topRated != null && upComing != null,
+          builder: (context) => Scaffold(
+            appBar: AppBar(
+              title: Text(
+                'IMDB',
+              ),
+              centerTitle: true,
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 20,
                 ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                height: 250,
-                width: double.infinity,
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) =>
-                      buildListOfTrendingMovies(
-                        context,
-                        trending: trending,
-                        index: index,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Display Trending Movies
+                    Text(
+                      'Trending Movies',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
                       ),
-                  itemCount: trending.length,
-                ),
-              ),
-              Text(
-                'Top Rated Movies',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                height: 250,
-                width: double.infinity,
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) =>
-                      buildListOfTopRatedMovies(
-                        context,
-                        topRated: topRated,
-                        index: index,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      height: 250,
+                      width: double.infinity,
+                      child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) =>
+                            buildListOfTrendingMovies(
+                          context,
+                          trending: trending,
+                          index: index,
+                        ),
+                        itemCount: trending.length,
                       ),
-                  itemCount: trending.length,
-                ),
-              ),
-              Text(
-                'Up Coming Movies',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                height: 250,
-                width: double.infinity,
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) =>
-                      buildListOfUpComingMovies(
-                        context,
-                        upComing: upComing,
-                        index: index,
+                    ),
+                    //Display Top Rated Movies
+                    Text(
+                      'Top Rated Movies',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
                       ),
-                  itemCount: upComing.length,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      height: 250,
+                      width: double.infinity,
+                      child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) =>
+                            buildListOfTopRatedMovies(
+                          context,
+                          topRated: topRated,
+                          index: index,
+                        ),
+                        itemCount: trending.length,
+                      ),
+                    ),
+                    //Display UpComing Movies
+                    Text(
+                      'Up Coming Movies',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      height: 250,
+                      width: double.infinity,
+                      child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) =>
+                            buildListOfUpComingMovies(
+                          context,
+                          upComing: upComing,
+                          index: index,
+                        ),
+                        itemCount: upComing.length,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+          fallback: (context) => Center(
+              child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF7643)),
+          )),
+        );
+      },
     );
   }
 
-  Widget buildListOfTrendingMovies(context,
-      {required final List trending, required int index,}) {
+  Widget buildListOfTrendingMovies(
+    context, {
+    required final List trending,
+    required int index,
+  }) {
     return InkWell(
       onTap: () {
+        //when to click on specific movie display details for this movie
         navigateTo(
           context,
           DescriptionMoviesScreen(
@@ -134,25 +153,25 @@ class HomeLayout extends StatelessWidget {
       },
       child: Column(
         children: [
-          trending[index]['title'] != null ?
-          Container(
-            height: 200,
-            width: 200,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(150),
-                image: DecorationImage(
-                    image: NetworkImage(
-                      'https://image.tmdb.org/t/p/w500' +
-                          trending[index]['poster_path'],
-                    ))),
-          ) : Container(),
+          //check the list of Trending is not empty and if the list is empty display empty Container
+          trending[index]['title'] != null
+              ? Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(150),
+                      image: DecorationImage(
+                          image: NetworkImage(
+                        'https://image.tmdb.org/t/p/w500' +
+                            trending[index]['poster_path'],
+                      ))),
+                )
+              : Container(),
           SizedBox(
             height: 5,
           ),
           Text(
-            '${trending[index]['title'] != null
-                ? trending[index]['title']
-                : 'loading'}',
+            '${trending[index]['title'] != null ? trending[index]['title'] : 'loading'}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
@@ -164,8 +183,11 @@ class HomeLayout extends StatelessWidget {
     );
   }
 
-  Widget buildListOfTopRatedMovies(context,
-      {required final List topRated, required int index}) {
+  Widget buildListOfTopRatedMovies(
+    context, {
+    required final List topRated,
+    required int index,
+  }) {
     return InkWell(
       onTap: () {
         navigateTo(
@@ -184,25 +206,24 @@ class HomeLayout extends StatelessWidget {
       },
       child: Column(
         children: [
-          topRated[index]['title'] != null ?
-          Container(
-            height: 200,
-            width: 200,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(150),
-                image: DecorationImage(
-                    image: NetworkImage(
-                      'https://image.tmdb.org/t/p/w500' +
-                          topRated[index]['poster_path'],
-                    ))),
-          ) : Container(),
+          topRated[index]['title'] != null
+              ? Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(150),
+                      image: DecorationImage(
+                          image: NetworkImage(
+                        'https://image.tmdb.org/t/p/w500' +
+                            topRated[index]['poster_path'],
+                      ))),
+                )
+              : Container(),
           SizedBox(
             height: 5,
           ),
           Text(
-            '${topRated[index]['title'] != null
-                ? topRated[index]['title']
-                : 'loading'}',
+            '${topRated[index]['title'] != null ? topRated[index]['title'] : 'loading'}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
@@ -214,8 +235,11 @@ class HomeLayout extends StatelessWidget {
     );
   }
 
-  Widget buildListOfUpComingMovies(context,
-      {required final List upComing, required int index}) {
+  Widget buildListOfUpComingMovies(
+    context, {
+    required final List upComing,
+    required int index,
+  }) {
     return InkWell(
       onTap: () {
         navigateTo(
@@ -234,25 +258,24 @@ class HomeLayout extends StatelessWidget {
       },
       child: Column(
         children: [
-          upComing[index]['title'] != null ?
-          Container(
-            height: 200,
-            width: 200,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(150),
-                image: DecorationImage(
-                    image: NetworkImage(
-                      'https://image.tmdb.org/t/p/w500' +
-                          upComing[index]['poster_path'],
-                    ))),
-          ) : Container(),
+          upComing[index]['title'] != null
+              ? Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(150),
+                      image: DecorationImage(
+                          image: NetworkImage(
+                        'https://image.tmdb.org/t/p/w500' +
+                            upComing[index]['poster_path'],
+                      ))),
+                )
+              : Container(),
           SizedBox(
             height: 5,
           ),
           Text(
-            '${upComing[index]['title'] != null
-                ? upComing[index]['title']
-                : 'loading'}',
+            '${upComing[index]['title'] != null ? upComing[index]['title'] : 'loading'}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,

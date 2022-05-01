@@ -16,6 +16,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
   void getMovies() async {
+    emit(AppLoadingGetMoviesState());
     TMDB tmdbWithCustomlogs = TMDB(
       ApiKeys(apikey, readAccessToken),
       logConfig: const ConfigLogger(
@@ -30,6 +31,6 @@ class AppCubit extends Cubit<AppStates> {
     trendingMovies = trendingResult['results'];
     topRatedMovies = topRatedResult['results'];
     upComingMovies =upComing['results'];
-    emit(AppGetMoviesSuccessfulState());
+    emit(AppSuccessGetMoviesState());
   }
 }

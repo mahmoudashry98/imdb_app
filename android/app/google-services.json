@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "382919644577",
+    "project_id": "appgain-9fb2f",
+    "storage_bucket": "appgain-9fb2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382919644577:android:50535286fa27e2176ba7e0",
+        "android_client_info": {
+          "package_name": "com.example.imdb_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382919644577-hvicfu3thv1m4q9ov7fu5am7ldvg6g5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiTJRNoQX7uI3VlOD5j1jS6S8SND-TMQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382919644577-hvicfu3thv1m4q9ov7fu5am7ldvg6g5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
